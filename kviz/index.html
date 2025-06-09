@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kvíz</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; text-align: center; }
+    img {
+      height: 66vh;
+      width: auto;
+      display: block;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 1rem 0;
+    }
+    input { padding: 0.5rem; font-size: 1rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0.5rem; }
+    .hidden { display: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; }
+    #set-choice { margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <h1>Kvíz</h1>
+
+  <div id="set-choice" class="hidden">
+    <p>Vyberte sadu:</p>
+    <select id="set-select">
+      <option value="hmyz">Hmyz</option>
+    </select>
+    <button id="set-choose-btn">Spustit kvíz</button>
+  </div>
+
+  <div id="quiz-container" class="hidden">
+    <h2 id="quiz-title"></h2>
+    <!-- Progress bar -->
+    <div id="progress" style="margin-bottom:1rem; font-weight:bold;"></div>
+    <img id="quiz-image" src="" alt="Obrázek kvízu">
+    <div>
+      <input type="text" id="answer-input" placeholder="Napište název" autocomplete="off">
+    </div>
+    <div>
+      <button id="submit-btn">Odeslat</button>
+      <button id="idont-btn">Nevím</button>
+      <button id="next-btn" class="hidden">Další</button>
+      <button id="finish-btn">Konec</button>
+    </div>
+    <div id="feedback"></div>
+  </div>
+
+  <div id="stats-container" class="hidden">
+    <h2>Statistiky</h2>
+    <table>
+      <thead>
+        <tr><th>Obrázek</th><th>Zobrazeno</th><th>Správně</th><th>Špatně</th></tr>
+      </thead>
+      <tbody id="stats-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    let sada = params.get('sada');
+
+    const setChoiceEl = document.getElementById('set-choice');
+    const quizContainer = document.getElementById('quiz-container');
+    const statsContainer = document.getElementById('stats-container');
+    const quizTitle = document.getElementById('quiz-title');
+    const setChooseBtn = document.getElementById('set-choose-btn');
+
+    function init() {
+      if (!sada) {
+        setChoiceEl.classList.remove('hidden');
+        setChooseBtn.addEventListener('click', () => {
+          const sel = document.getElementById('set-select').value;
+          location.search = '?sada=' + encodeURIComponent(sel);
+        });
+      } else {
+        setChoiceEl.classList.add('hidden');
+        quizTitle.textContent = `Kvíz: ${sada}`;
+        loadQuiz();
+      }
+    }
+
+    function loadQuiz() {
+      fetch(`${sada}.json`)
+        .then(resp => { if (!resp.ok) throw new Error('JSON nenalezen'); return resp.json(); })
+        .then(items => startQuiz(items))
+        .catch(err => document.body.innerHTML = `<p>Chyba při načítání JSON: ${err.message}</p>`);
+    }
+
+    function startQuiz(items) {
+      quizContainer.classList.remove('hidden');
+
+      // Statistiky a fronta
+      const stats = {};
+      items.forEach(item => stats[item.id] = { ...item, shown: 0, correct: 0, wrong: 0 });
+      let queue = [];
+      items.forEach(item => queue.push(item, item));
+      shuffle(queue);
+
+      // Reference na prvky
+      const imgEl      = document.getElementById('quiz-image');
+      const inputEl    = document.getElementById('answer-input');
+      const submitBtn  = document.getElementById('submit-btn');
+      const idontBtn   = document.getElementById('idont-btn');
+      const nextBtn    = document.getElementById('next-btn');
+      const finishBtn  = document.getElementById('finish-btn');
+      const feedbackEl = document.getElementById('feedback');
+      const statsBody  = document.getElementById('stats-body');
+      const progressEl = document.getElementById('progress');
+      let current;
+
+      // Progres
+      let totalQuestions = items.length * 2;
+      let questionIndex  = 0;
+      function updateProgress() {
+        progressEl.textContent = `Otázka ${questionIndex} z ${totalQuestions}`;
+      }
+
+      // Eventy
+      submitBtn.addEventListener('click', () => handleAnswer(false));
+      idontBtn.addEventListener('click', () => handleAnswer(true));
+      nextBtn.addEventListener('click', loadNext);
+      finishBtn.addEventListener('click', showStats);
+      inputEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !submitBtn.classList.contains('hidden')) {
+          e.preventDefault(); submitBtn.click();
+        }
+      });
+
+      // Načti první otázku
+      loadNext();
+
+      function loadNext() {
+        questionIndex++;
+        updateProgress();
+        feedbackEl.textContent = '';
+        inputEl.value = '';
+        submitBtn.classList.remove('hidden');
+        idontBtn.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+        inputEl.disabled = false;
+
+        if (queue.length === 0) {
+          showStats(); return;
+        }
+        current = queue.shift();
+        stats[current.id].shown++;
+        imgEl.src = `${sada}/${current.filename}`;
+        inputEl.focus();
+      }
+
+      function handleAnswer(isIDont) {
+        const ans = normalize(inputEl.value);
+        const correctText = normalize(current.name);
+        const wrong = isIDont || ans !== correctText;
+        if (wrong) {
+          // špatná
+          stats[current.id].wrong++;
+          feedbackEl.innerHTML = `❌ Správný název: <strong>${current.name}</strong>`;
+          queue.push(current, current);
+          totalQuestions += 2;
+          updateProgress();
+          idontBtn.classList.add('hidden');
+          submitBtn.classList.remove('hidden');
+          nextBtn.classList.remove('hidden');
+          inputEl.disabled = false;
+          inputEl.focus();
+        } else {
+          // správná
+          stats[current.id].correct++;
+          feedbackEl.textContent = '✅ Správně!';
+          submitBtn.classList.add('hidden');
+          idontBtn.classList.add('hidden');
+          inputEl.disabled = true;
+          nextBtn.classList.remove('hidden');
+        }
+      }
+
+      function showStats() {
+        quizContainer.classList.add('hidden');
+        statsContainer.classList.remove('hidden');
+        items.forEach(item => {
+          const s = stats[item.id];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${item.name}</td><td>${s.shown}</td><td>${s.correct}</td><td>${s.wrong}</td>`;
+          statsBody.appendChild(tr);
+        });
+      }
+
+      function normalize(str) {
+        return str.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+
+      function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

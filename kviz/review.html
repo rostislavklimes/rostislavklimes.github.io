@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review: Sady obrázků</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; text-align: center; }
+    #set-choice { margin-bottom: 2rem; }
+    button, select { padding: 0.5rem 1rem; font-size: 1rem; }
+    .hidden { display: none; }
+    .gallery { display: flex; flex-direction: column; align-items: center; }
+    figure { margin: 1rem 0; }
+    img { max-width: 100%; height: auto; }
+    figcaption { margin-top: 0.5rem; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Review: zkontrolujte JSON definici</h1>
+  <div id="set-choice">
+    <p>Vyberte sadu pro review:</p>
+    <select id="set-select">
+      <option value="hmyz">Hmyz</option>
+    </select>
+    <button id="set-choose-btn">Zobrazit galerii</button>
+  </div>
+
+  <div id="gallery" class="hidden">
+    <h2 id="gallery-title"></h2>
+    <div class="gallery" id="gallery-content"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    let sada = params.get('sada');
+    const setChoiceEl = document.getElementById('set-choice');
+    const galleryEl = document.getElementById('gallery');
+    const galleryTitle = document.getElementById('gallery-title');
+    const galleryContent = document.getElementById('gallery-content');
+    const setChooseBtn = document.getElementById('set-choose-btn');
+
+    function init() {
+      if (sada) {
+        startReview(sada);
+      } else {
+        setChoiceEl.classList.remove('hidden');
+        setChooseBtn.addEventListener('click', () => {
+          const sel = document.getElementById('set-select').value;
+          location.search = '?sada=' + encodeURIComponent(sel);
+        });
+      }
+    }
+
+    function startReview(setName) {
+      setChoiceEl.classList.add('hidden');
+      galleryEl.classList.remove('hidden');
+      galleryTitle.textContent = `Sada: ${setName}`;
+      fetch(`${setName}.json`)
+        .then(resp => { if (!resp.ok) throw new Error('JSON nenalezen'); return resp.json(); })
+        .then(items => renderGallery(setName, items))
+        .catch(err => galleryContent.innerHTML = `<p>Chyba: ${err.message}</p>`);
+    }
+
+    function renderGallery(setName, items) {
+      items.forEach(item => {
+        const fig = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = `${setName}/${item.filename}`;
+        img.alt = item.name;
+        const caption = document.createElement('figcaption');
+        caption.textContent = `${item.id}. ${item.name}`;
+        fig.appendChild(img);
+        fig.appendChild(caption);
+        galleryContent.appendChild(fig);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
