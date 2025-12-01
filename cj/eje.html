@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Procvičování – Ě nebo JE</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            padding: 24px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .word {
+            font-size: 32px;
+            text-align: center;
+            margin: 30px 0 20px;
+            letter-spacing: 2px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #fafafa;
+        }
+        button:hover {
+            background: #eee;
+        }
+        #new-word-btn {
+            display: block;
+            margin: 10px auto 0;
+            font-size: 16px;
+        }
+        #result {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        #rule {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 6px;
+            color: #555;
+        }
+        #score {
+            text-align: center;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+        .hint {
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body onload="newWord()">
+    <div class="container">
+        <h1>Ě nebo JE?</h1>
+        <p style="text-align:center;">
+            Dítě má rozhodnout, zda místo podtržítka patří <strong>Ě</strong> nebo <strong>JE</strong>.
+        </p>
+
+        <div id="word" class="word"></div>
+
+        <div class="buttons">
+            <button onclick="answer('Ě')">Ě</button>
+            <button onclick="answer('JE')">JE</button>
+        </div>
+
+        <p id="result"></p>
+        <p id="rule"></p>
+        <p id="score">Skóre: 0 / 0</p>
+        <p class="hint">Klikni na „Nové slovo“ pro další příklad.</p>
+        <button id="new-word-btn" onclick="newWord()">Nové slovo</button>
+    </div>
+
+    <script>
+        // Slova, kde _ znamená místo pro Ě / JE
+        const words = [
+            // JE – od slovesa „jet“
+            { pattern: "v_t do garáže", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (vjet)." },
+            { pattern: "u_t z nádraží", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (ujet)." },
+            { pattern: "na_t na obrubník", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (najet)." },
+            { pattern: "pře_t kočku", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (přejet)." },
+            { pattern: "s_t z kopce", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (sjet)." },
+            { pattern: "o_t město dokola", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (objet)." },
+            { pattern: "do_t do cíle", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (dojet)." },
+            { pattern: "za_t k babičce", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (zajet)." },
+            { pattern: "vy_t na kopec", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (vyjet)." },
+            { pattern: "od_t na dovolenou", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (odjet)." },
+            { pattern: "při_t domů", correct: "JE", rule: "Je to od slovesa „jet“ – po J píšeme JE (přijet)." },
+
+            // Ě – po B, P, V, M, D, T, N a typické skupiny
+
+            // BĚ
+            { pattern: "b_žet závod", correct: "Ě", rule: "BĚ se píše s Ě (běžet)." },
+            { pattern: "u_hnout kilometr", correct: "Ě", rule: "UBĚ se píše s Ě (uběhnout)." },
+            { pattern: "přib_hnout domů", correct: "Ě", rule: "BĚ se píše s Ě (přiběhnout)." },
+
+            // PĚ
+            { pattern: "p_na na cappuccinu", correct: "Ě", rule: "PĚ se píše s Ě (pěna)." },
+            { pattern: "jít p_šky do školy", correct: "Ě", rule: "PĚ se píše s Ě (pěšky)." },
+            { pattern: "zp_vat písničku", correct: "Ě", rule: "ZPĚ se píše s Ě (zpívat / zpěv)." }, 
+
+            // VĚ
+            { pattern: "v_ž na náměstí", correct: "Ě", rule: "VĚ se píše s Ě (věž)." },
+            { pattern: "hv_zdy na obloze", correct: "Ě", rule: "HVĚ se píše s Ě (hvězdy)." },
+            { pattern: "v_da o přírodě", correct: "Ě", rule: "VĚD se píše s Ě (věda, vědět)." },
+            { pattern: "v_tev stromu", correct: "Ě", rule: "VĚT se píše s Ě (větev)." },
+
+            // MĚ
+            { pattern: "m_sto Praha", correct: "Ě", rule: "MĚ se píše s Ě (město)." },
+            { pattern: "zem_", correct: "Ě", rule: "ZEMĚ se píše s Ě (země)." },
+            { pattern: "j_no kluka", correct: "Ě", rule: "JMĚ se píše s Ě (jméno)." },
+            { pattern: "pam_t na dovolenou", correct: "Ě", rule: "PAMĚ se píše s Ě (paměť, památka)." },
+            { pattern: "sm_na v práci", correct: "Ě", rule: "SMĚ se píše s Ě (směna)." },
+            { pattern: "vzpomínat na d_tství", correct: "Ě", rule: "DĚT se píše s Ě (dětství – pozor i po D se píše Ě)." },
+
+            // DĚ
+            { pattern: "d_ti si hrají", correct: "Ě", rule: "Po D píšeme Ě – děti." },
+            { pattern: "d_da mává z okna", correct: "Ě", rule: "Po D píšeme Ě – děda." },
+            { pattern: "n_děle odpočíváme", correct: "Ě", rule: "Po D píšeme Ě – neděle." },
+
+            // TĚ
+            { pattern: "t_lo bolí", correct: "Ě", rule: "Po T píšeme Ě – tělo." },
+            { pattern: "tžký batoh", correct: "Ě", rule: "TĚŽ se píše s Ě (těžký) – po T píšeme Ě.", patternDisplayFix: "t_žký batoh" },
+
+            // NĚ
+            { pattern: "n_kdo zaklepal", correct: "Ě", rule: "Po N píšeme Ě – někdo." },
+            { pattern: "n_co spadlo", correct: "Ě", rule: "Po N píšeme Ě – něco." },
+            { pattern: "u_ní doma", correct: "Ě", rule: "Po N píšeme Ě – u něj." }
+        ];
+
+        let currentWord = null;
+        let total = 0;
+        let correct = 0;
+
+        function newWord() {
+            const index = Math.floor(Math.random() * words.length);
+            currentWord = words[index];
+
+            // speciální možnost opravit zobrazení, pokud je potřeba (např. t_žký)
+            const pattern = currentWord.patternDisplayFix || currentWord.pattern;
+
+            // zobrazíme mezeru místo podtržítka (větší díra)
+            const display = pattern.replace('_', '___');
+            document.getElementById("word").textContent = display;
+
+            document.getElementById("result").textContent = "";
+            document.getElementById("rule").textContent = "";
+        }
+
+        function answer(choice) {
+            if (!currentWord) return;
+
+            total++;
+
+            let prefix;
+            if (choice === currentWord.correct) {
+                correct++;
+                prefix = "Správně! ";
+            } else {
+                prefix = "To teď nevyšlo. ";
+            }
+
+            // pro vyhodnocení vždy bereme základní pattern
+            const basePattern = currentWord.pattern;
+            const correctString = basePattern.replace(
+                '_',
+                currentWord.correct === "JE" ? "je" : "ě"
+            );
+
+            document.getElementById("result").textContent =
+                prefix + 'Správně je: "' + correctString + '".';
+
+            document.getElementById("rule").textContent =
+                "Pravidlo: " + currentWord.rule;
+
+            document.getElementById("score").textContent =
+                "Skóre: " + correct + " / " + total;
+        }
+    </script>
+</body>
+</html>
