@@ -1,0 +1,211 @@
+[
+    {
+        "id": 1,
+        "name": "Ještěrka obecná",
+        "filename": "Obrázek1.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 2,
+        "name": "Ještěrka Živorodá",
+        "filename": "Obrázek2.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 3,
+        "name": "Ještěrka zelená",
+        "filename": "Obrázek3.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 4,
+        "name": "Slepýš křehký",
+        "filename": "Obrázek4.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 5,
+        "name": "Varan",
+        "filename": "Obrázek5.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 6,
+        "name": "Varan komodský",
+        "filename": "Obrázek6.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 7,
+        "name": "Gekon",
+        "filename": "Obrázek7.JPG",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 8,
+        "name": "Leguán zelený",
+        "filename": "Obrázek8.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 9,
+        "name": "Chameleón obecný",
+        "filename": "Obrázek9.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 10,
+        "name": "Užovka obojková",
+        "filename": "Obrázek10.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 11,
+        "name": "Užovka podplamatá",
+        "filename": "Obrázek11.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 12,
+        "name": "Užovka hladká",
+        "filename": "Obrázek12.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 13,
+        "name": "Užovka stromová",
+        "filename": "Obrázek13.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 14,
+        "name": "Užovka stromová",
+        "filename": "Obrázek14.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 15,
+        "name": "Kobra idndická",
+        "filename": "Obrázek15.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+       ,{
+        "id": 16,
+        "name": "Mamba",
+        "filename": "Obrázek16.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 17,
+        "name": "Tajpan",
+        "filename": "Obrázek17.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 18,
+        "name": "Korálovec",
+        "filename": "Obrázek18.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 19,
+        "name": "Krajta tygrovaná",
+        "filename": "Obrázek19.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 20,
+        "name": "Hroznýš královský",
+        "filename": "Obrázek20.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 21,
+        "name": "Anakonda velká",
+        "filename": "Obrázek21.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 22,
+        "name": "želva nádherná",
+        "filename": "Obrázek22.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 23,
+        "name": "želva žlutohnědá",
+        "filename": "Obrázek23.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 24,
+        "name": "Želva obrovská",
+        "filename": "Obrázek24.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 25,
+        "name": "Kožatka velká",
+        "filename": "Obrázek25.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 26,
+        "name": "Kareta",
+        "filename": "Obrázek26.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 27,
+        "name": "Kajman černý",
+        "filename": "Obrázek27.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 28,
+        "name": "Aligátor",
+        "filename": "Obrázek28.jpg",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 29,
+        "name": "Gaviál indický",
+        "filename": "Obrázek29.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+
+    ,{
+        "id": 30,
+        "name": "Krokodýl nilský",
+        "filename": "Obrázek30.png",
+        "description": "kratší zadeček, rozšiřující nebo plochý, ráda usedá vodorovně"
+    }
+]
